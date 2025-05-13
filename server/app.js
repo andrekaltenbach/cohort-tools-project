@@ -2,10 +2,18 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const PORT = 5005;
 
 const cohorts = require('./cohorts.json');
 const students = require('./students.json');
+
+mongoose
+  .connect('mongodb://127.0.0.1:27017/cohort-tools-api')
+  .then((x) => {
+    console.log(`connected to database: ${x.connections[0].name}`);
+  })
+  .catch((err) => console.log('error while connecting to database'));
 
 // STATIC DATA
 
