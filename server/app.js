@@ -3,10 +3,12 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const Cohort = require('./models/Cohort.model');
+const Student = require('./models/Student.model');
 const PORT = 5005;
 
-const cohorts = require('./cohorts.json');
-const students = require('./students.json');
+// const cohorts = require('./cohorts.json');
+// const students = require('./students.json');
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/cohort-tools-api')
@@ -38,11 +40,21 @@ app.get('/docs', (req, res) => {
 });
 
 app.get('/api/cohorts', (req, res) => {
-  res.json(cohorts);
+  Cohort.find({})
+    .then((cohorts) => {
+      console.log('received data from Cohort');
+      res.json(cohorts);
+    })
+    .catch((err) => console.log(err));
 });
 
 app.get('/api/students', (req, res) => {
-  res.json(students);
+  Student.find({})
+    .then((students) => {
+      console.log('received data from Student');
+      res.json(students);
+    })
+    .catch((err) => console.log(err));
 });
 
 // START SERVER
