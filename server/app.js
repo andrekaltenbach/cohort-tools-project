@@ -53,6 +53,19 @@ app.post('/api/cohorts', (req, res) => {
     });
 });
 
+// cohort routes
+
+app.post('/api/cohorts', (req, res) => {
+  const newCohort = req.body;
+  Cohort.create(newCohort)
+    .then((cohort) => res.status(201).json(cohort))
+    .catch((err) => {
+      console.log('error: failed to create new cohort');
+      console.log(err);
+      res.status(500).json({ error: 'failed to create new cohort' });
+    });
+});
+
 app.get('/api/cohorts', (req, res) => {
   Cohort.find({})
     .then((cohorts) => {
@@ -105,11 +118,63 @@ app.delete('/api/cohorts/:cohortId', (req, res) => {
 
 // student routes
 
+// Students Routes
+// Creates a new student
+app.post('/api/students', (req, res) => {
+  Student.create(req.body)
+    .then((student) => {
+      console.log('received data from Student');
+      res.json(student);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Retrieves all of the students in the database collection
 app.get('/api/students', (req, res) => {
   Student.find({})
     .then((students) => {
       console.log('received data from Student');
       res.json(students);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Retrieves all of the students for a given cohort
+app.get('/api/students/cohort/:cohortId', (req, res) => {
+  Student.find({ cohort: req.params.cohortId })
+    .then((students) => {
+      console.log('received data from Student, cohort: ' + req.params.cohortId);
+      res.json(students);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Retrieves a student by id
+app.get('/api/students/:studentId', (req, res) => {
+  Student.findById(req.params.studentId)
+    .then((student) => {
+      console.log('received data from Student');
+      res.json(student);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Updates a student by id
+app.put('/api/students/:studentId', (req, res) => {
+  Student.findByIdAndUpdate(req.params.studentId, req.body)
+    .then((student) => {
+      console.log('received data from Student');
+      res.json(student);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Deletes a student by id
+app.delete('/api/students/:studentId', (req, res) => {
+  Student.findByIdAndDelete(req.params.studentId)
+    .then((student) => {
+      console.log('received data from Student');
+      res.json(student);
     })
     .catch((err) => console.log(err));
 });
