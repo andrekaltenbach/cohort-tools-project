@@ -1,21 +1,21 @@
-const express = require('express');
-const morgan = require('morgan');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const Cohort = require('./models/Cohort.model');
-const Student = require('./models/Student.model');
+const express = require("express");
+const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const Cohort = require("./models/Cohort.model");
+const Student = require("./models/Student.model");
 const PORT = 5005;
 
 // const cohorts = require('./cohorts.json');
 // const students = require('./students.json');
 
 mongoose
-  .connect('mongodb://127.0.0.1:27017/cohort-tools-api')
+  .connect("mongodb://127.0.0.1:27017/cohort-tools-api")
   .then((x) => {
     console.log(`connected to database: ${x.connections[0].name}`);
   })
-  .catch((err) => console.log('error while connecting to database'));
+  .catch((err) => console.log("error while connecting to database"));
 
 // STATIC DATA
 
@@ -25,34 +25,86 @@ const app = express();
 // MIDDLEWARE
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    origin: ["http://localhost:5173"],
   })
 );
 app.use(express.json());
-app.use(morgan('dev'));
-app.use(express.static('public'));
+app.use(morgan("dev"));
+app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // ROUTES - https://expressjs.com/en/starter/basic-routing.html
-app.get('/docs', (req, res) => {
-  res.sendFile(__dirname + '/views/docs.html');
+app.get("/docs", (req, res) => {
+  res.sendFile(__dirname + "/views/docs.html");
 });
 
-app.get('/api/cohorts', (req, res) => {
+app.get("/api/cohorts", (req, res) => {
   Cohort.find({})
     .then((cohorts) => {
-      console.log('received data from Cohort');
+      console.log("received data from Cohort");
       res.json(cohorts);
     })
     .catch((err) => console.log(err));
 });
 
-app.get('/api/students', (req, res) => {
+// Students Routes
+// Creates a new student
+app.post("/api/students", (req, res) => {
+  Student.create(req.body)
+    .then((student) => {
+      console.log("received data from Student");
+      res.json(student);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Retrieves all of the students in the database collection
+app.get("/api/students", (req, res) => {
   Student.find({})
     .then((students) => {
-      console.log('received data from Student');
+      console.log("received data from Student");
       res.json(students);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Retrieves all of the students for a given cohort
+app.get("/api/students/cohort/:cohortId", (req, res) => {
+  Student.find({ cohort: req.params.cohortId })
+    .then((students) => {
+      console.log("received data from Student, cohort: " + req.params.cohortId);
+      res.json(students);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Retrieves a student by id
+app.get("/api/students/:studentId", (req, res) => {
+  Student.findById(req.params.studentId)
+    .then((student) => {
+      console.log("received data from Student");
+      res.json(student);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Updates a student by id
+app.put("/api/students/:studentId", (req, res) => {
+  Student.findByIdAndUpdate(req.params.studentId, req.body)
+    .then((student) => {
+      console.log("received data from Student");
+      res.json(student);
+    })
+    .catch((err) => console.log(err));
+});
+
+// Deletes a student by id
+app.delete("/api/students/:studentId", (req, res) => {
+  Student.findByIdAndDelete(req.params.studentId)
+    .then((student) => {
+      console.log("received data from Student");
+      res.json(student);
     })
     .catch((err) => console.log(err));
 });
