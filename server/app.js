@@ -53,8 +53,8 @@ app.post('/api/cohorts', (req, res) => {
     });
 });
 
-// cohort routes
-
+// Cohort routes
+// Creates a new cohort
 app.post('/api/cohorts', (req, res) => {
   const newCohort = req.body;
   Cohort.create(newCohort)
@@ -66,6 +66,7 @@ app.post('/api/cohorts', (req, res) => {
     });
 });
 
+// Retrieves all of the cohorts in the database collection
 app.get('/api/cohorts', (req, res) => {
   Cohort.find({})
     .then((cohorts) => {
@@ -79,6 +80,7 @@ app.get('/api/cohorts', (req, res) => {
     });
 });
 
+// Retrieves a specific cohort by id
 app.get('/api/cohorts/:cohortId', (req, res) => {
   const { cohortId } = req.params;
   Cohort.findById(cohortId)
@@ -92,6 +94,7 @@ app.get('/api/cohorts/:cohortId', (req, res) => {
     });
 });
 
+// Updates a specific cohort by id
 app.put('/api/cohorts/:cohortId', (req, res) => {
   const { cohortId } = req.params;
   console.log(cohortId);
@@ -105,6 +108,7 @@ app.put('/api/cohorts/:cohortId', (req, res) => {
     });
 });
 
+// Deletes a specific cohort by id
 app.delete('/api/cohorts/:cohortId', (req, res) => {
   const { cohortId } = req.params;
   Cohort.findByIdAndDelete(cohortId)
@@ -115,8 +119,6 @@ app.delete('/api/cohorts/:cohortId', (req, res) => {
       res.status(500).json({ error: `failed to delete cohort with id: ${cohortId}` });
     });
 });
-
-// student routes
 
 // Students Routes
 // Creates a new student
@@ -132,6 +134,7 @@ app.post('/api/students', (req, res) => {
 // Retrieves all of the students in the database collection
 app.get('/api/students', (req, res) => {
   Student.find({})
+    .populate('cohort')
     .then((students) => {
       console.log('received data from Student');
       res.json(students);
@@ -142,6 +145,7 @@ app.get('/api/students', (req, res) => {
 // Retrieves all of the students for a given cohort
 app.get('/api/students/cohort/:cohortId', (req, res) => {
   Student.find({ cohort: req.params.cohortId })
+    .populate('cohort')
     .then((students) => {
       console.log('received data from Student, cohort: ' + req.params.cohortId);
       res.json(students);
@@ -152,6 +156,7 @@ app.get('/api/students/cohort/:cohortId', (req, res) => {
 // Retrieves a student by id
 app.get('/api/students/:studentId', (req, res) => {
   Student.findById(req.params.studentId)
+    .populate('cohort')
     .then((student) => {
       console.log('received data from Student');
       res.json(student);
