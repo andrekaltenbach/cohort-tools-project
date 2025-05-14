@@ -17,6 +17,7 @@ mongoose
   })
   .catch((err) => console.log('error while connecting to database'));
 
+mongoose.set('runValidators', true);
 // STATIC DATA
 
 // INITIALIZE EXPRESS APP - https://expressjs.com/en/4x/api.html#express
@@ -39,14 +40,70 @@ app.get('/docs', (req, res) => {
   res.sendFile(__dirname + '/views/docs.html');
 });
 
+// cohort routes
+
+app.post('/api/cohorts', (req, res) => {
+  const newCohort = req.body;
+  Cohort.create(newCohort)
+    .then((cohort) => res.status(201).json(cohort))
+    .catch((err) => {
+      console.log('error: failed to create new cohort');
+      console.log(err);
+      res.status(500).json({ error: 'failed to create new cohort' });
+    });
+});
+
 app.get('/api/cohorts', (req, res) => {
   Cohort.find({})
     .then((cohorts) => {
       console.log('received data from Cohort');
       res.json(cohorts);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log('error: failed to get cohorts from db');
+      console.log(err);
+      res.status(500).json({ error: 'failed to get cohorts from db' });
+    });
 });
+
+app.get('/api/cohorts/:cohortId', (req, res) => {
+  const { cohortId } = req.params;
+  Cohort.findById(cohortId)
+    .then((cohort) => {
+      res.status(200).json(cohort);
+    })
+    .catch((err) => {
+      console.log(`error: failed to get cohort with id: ${cohortId}`);
+      console.log(err);
+      res.status(500).json({ error: `failed to get cohort with id: ${cohortId}` });
+    });
+});
+
+app.put('/api/cohorts/:cohortId', (req, res) => {
+  const { cohortId } = req.params;
+  console.log(cohortId);
+  const updateCohort = req.body;
+  Cohort.findByIdAndUpdate(cohortId, updateCohort, { new: true })
+    .then((cohort) => res.status(200).json(cohort))
+    .catch((err) => {
+      console.log(`error: failed to get cohort with id: ${cohortId}`);
+      console.log(err);
+      res.status(500).json({ error: `failed to get cohort with id: ${cohortId}` });
+    });
+});
+
+app.delete('/api/cohorts/:cohortId', (req, res) => {
+  const { cohortId } = req.params;
+  Cohort.findByIdAndDelete(cohortId)
+    .then((cohort) => res.status(204).send())
+    .catch((err) => {
+      console.log(`error: failed to delete cohort with id: ${cohortId}`);
+      console.log(err);
+      res.status(500).json({ error: `failed to delete cohort with id: ${cohortId}` });
+    });
+});
+
+// student routes
 
 app.get('/api/students', (req, res) => {
   Student.find({})
