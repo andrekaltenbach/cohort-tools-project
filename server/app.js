@@ -44,6 +44,11 @@ app.use('/api', cohortRouter);
 const studentRouter = require('./routes/student.routes');
 app.use('/api', studentRouter);
 
+// Error handling
+const { errorHandler, notFoundHandler } = require('./middleware/error-handling');
+app.use(notFoundHandler);
+app.use(errorHandler);
+
 // START SERVER
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
