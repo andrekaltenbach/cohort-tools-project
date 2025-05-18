@@ -37,17 +37,10 @@ app.get('/docs', (req, res) => {
   res.sendFile(__dirname + '/views/docs.html');
 });
 
-// Authentication routes
-const authRouter = require('./routes/auth.routes');
-app.use('/auth', authRouter);
-
-// Cohort routes
-const cohortRouter = require('./routes/cohort.routes');
-app.use('/api', cohortRouter);
-
-// Students Routes
-const studentRouter = require('./routes/student.routes');
-app.use('/api', studentRouter);
+app.use('/auth', require('./routes/auth.routes'));
+app.use('/api', require('./routes/user.routes'));
+app.use('/api', require('./routes/cohort.routes'));
+app.use('/api', require('./routes/student.routes'));
 
 // Error handling
 const { errorHandler, notFoundHandler } = require('./middleware/error-handling');

@@ -50,7 +50,7 @@ router.post('/signup', (req, res, next) => {
       return User.create(newUser);
     })
     .then((createdUser) => {
-      const { email, name, _id } = req.body;
+      const { email, name, _id } = createdUser;
       const user = { email, name, _id };
 
       res.status(201).json({ user: user });
