@@ -1,3 +1,4 @@
+require('dotenv/config'); // make use of environment variables (.env)
 const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
@@ -35,6 +36,10 @@ app.use(cookieParser());
 app.get('/docs', (req, res) => {
   res.sendFile(__dirname + '/views/docs.html');
 });
+
+// Authentication routes
+const authRouter = require('./routes/auth.routes');
+app.use('/auth', authRouter);
 
 // Cohort routes
 const cohortRouter = require('./routes/cohort.routes');
