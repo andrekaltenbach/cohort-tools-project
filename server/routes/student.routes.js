@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Student = require('../models/Student.model');
 
 // Creates a new student
-router.post('/students', (req, res) => {
+router.post('/students', (req, res, next) => {
   Student.create(req.body)
     .then((student) => {
       console.log('create student succesful');
@@ -12,7 +12,7 @@ router.post('/students', (req, res) => {
 });
 
 // Retrieves all of the students in the database collection
-router.get('/students', (req, res) => {
+router.get('/students', (req, res, next) => {
   Student.find({})
     .populate('cohort')
     .then((students) => {
@@ -23,7 +23,7 @@ router.get('/students', (req, res) => {
 });
 
 // Retrieves all of the students for a given cohort
-router.get('/students/cohort/:cohortId', (req, res) => {
+router.get('/students/cohort/:cohortId', (req, res, next) => {
   Student.find({ cohort: req.params.cohortId })
     .populate('cohort')
     .then((students) => {
@@ -34,7 +34,7 @@ router.get('/students/cohort/:cohortId', (req, res) => {
 });
 
 // Retrieves a student by id
-router.get('/students/:studentId', (req, res) => {
+router.get('/students/:studentId', (req, res, next) => {
   Student.findById(req.params.studentId)
     .populate('cohort')
     .then((student) => {
@@ -45,7 +45,7 @@ router.get('/students/:studentId', (req, res) => {
 });
 
 // Updates a student by id
-router.put('/students/:studentId', (req, res) => {
+router.put('/students/:studentId', (req, res, next) => {
   Student.findByIdAndUpdate(req.params.studentId, req.body, { new: true })
     .then((student) => {
       console.log('received data from Student');
@@ -55,7 +55,7 @@ router.put('/students/:studentId', (req, res) => {
 });
 
 // Deletes a student by id
-router.delete('/students/:studentId', (req, res) => {
+router.delete('/students/:studentId', (req, res, next) => {
   Student.findByIdAndDelete(req.params.studentId)
     .then((student) => {
       console.log('received data from Student');

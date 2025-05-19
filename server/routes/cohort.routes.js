@@ -13,7 +13,13 @@ router.post('/cohorts', (req, res, next) => {
 
 // Retrieves all of the cohorts in the database collection
 router.get('/cohorts', (req, res, next) => {
-  Cohort.find({})
+  const { program, campus } = req.query;
+  let query = {};
+
+  if (program) query.program = program;
+  if (campus) query.campus = campus;
+
+  Cohort.find(query)
     .then((cohorts) => {
       console.log('received data from Cohort');
       res.json(cohorts);
